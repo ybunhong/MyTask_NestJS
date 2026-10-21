@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
 import { UserAgent } from '../common/user-agent.decorator.js';
 import { TasksService } from './tasks.service.js';
 
@@ -33,8 +33,23 @@ export class TasksController {
     return { userAgent };
   }
 
+  @Post()
+  createTask(@Body('title') title: string) {
+    return this.tasksService.create(title);
+  }
+
   @Get(':id')
   getTaskById(@Param('id') id: string) {
     return this.tasksService.findOne(parseInt(id));
+  }
+
+  @Patch(':id')
+  updateTask(@Param('id') id: string, @Body('done') done: boolean) {
+    return this.tasksService.update(parseInt(id), done);
+  }
+
+  @Delete(':id')
+  removeTask(@Param('id') id: string) {
+    return this.tasksService.remove(parseInt(id));
   }
 }
