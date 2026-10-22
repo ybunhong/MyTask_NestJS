@@ -5,6 +5,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { TasksController } from './tasks/tasks.controller.js';
 import { TasksService } from './tasks/tasks.service.js';
+import { Task } from './tasks/task.entity.js';
 
 @Module({
   imports: [
@@ -19,10 +20,11 @@ import { TasksService } from './tasks/tasks.service.js';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [],
+        entities: [Task],
         synchronize: true,
       }),
     }),
+    TypeOrmModule.forFeature([Task]),
   ],
   controllers: [AppController, TasksController],
   providers: [AppService, TasksService],
