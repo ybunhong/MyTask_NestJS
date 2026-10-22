@@ -11,15 +11,22 @@ export class TasksService {
   ];
   private nextId = 6;
 
-  findAll() {
+  private fakeDatabaseDelay() {
+    return new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
+  async findAll() {
+    await this.fakeDatabaseDelay();
     return this.tasks;
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
+    await this.fakeDatabaseDelay();
     return this.tasks.find(task => task.id === id);
   }
 
-  create(title: string) {
+  async create(title: string) {
+    await this.fakeDatabaseDelay();
     const newTask = {
       id: this.nextId++,
       title,
@@ -29,7 +36,8 @@ export class TasksService {
     return newTask;
   }
 
-  update(id: number, done: boolean) {
+  async update(id: number, done: boolean) {
+    await this.fakeDatabaseDelay();
     const task = this.tasks.find(task => task.id === id);
     if (task) {
       task.done = done;
@@ -38,7 +46,8 @@ export class TasksService {
     return null;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.fakeDatabaseDelay();
     const index = this.tasks.findIndex(task => task.id === id);
     if (index !== -1) {
       const removed = this.tasks.splice(index, 1);

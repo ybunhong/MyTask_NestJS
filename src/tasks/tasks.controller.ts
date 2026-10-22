@@ -7,7 +7,7 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Get()
-  getAllTasks() {
+  async getAllTasks() {
     return this.tasksService.findAll();
   }
 
@@ -17,14 +17,14 @@ export class TasksController {
   }
 
   @Get('todo')
-  getTodoTasks() {
-    const allTasks = this.tasksService.findAll();
+  async getTodoTasks() {
+    const allTasks = await this.tasksService.findAll();
     return allTasks.filter(task => task.done === false);
   }
 
   @Get('done')
-  getDoneTasks() {
-    const allTasks = this.tasksService.findAll();
+  async getDoneTasks() {
+    const allTasks = await this.tasksService.findAll();
     return allTasks.filter(task => task.done === true);
   }
 
@@ -34,22 +34,23 @@ export class TasksController {
   }
 
   @Post()
-  createTask(@Body('title') title: string) {
+  async createTask(@Body('title') title: string) {
     return this.tasksService.create(title);
   }
 
   @Get(':id')
-  getTaskById(@Param('id') id: string) {
-    return this.tasksService.findOne(parseInt(id));
+  async getTaskById(@Param('id') id: string) {
+    const task = await this.tasksService.findOne(parseInt(id));
+    return task;
   }
 
   @Patch(':id')
-  updateTask(@Param('id') id: string, @Body('done') done: boolean) {
+  async updateTask(@Param('id') id: string, @Body('done') done: boolean) {
     return this.tasksService.update(parseInt(id), done);
   }
 
   @Delete(':id')
-  removeTask(@Param('id') id: string) {
+  async removeTask(@Param('id') id: string) {
     return this.tasksService.remove(parseInt(id));
   }
 }
