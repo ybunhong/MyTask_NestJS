@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task } from './task.entity.js';
 
 @Injectable()
 export class TasksService {
+  private readonly logger = new Logger(TasksService.name);
+
   constructor(
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
@@ -15,29 +17,40 @@ export class TasksService {
   }
 
   async findOne(id: number) {
-    return this.taskRepository.findOne({ where: { id } });
+    const task = await this.taskRepository.findOne({ where: { id } });
+    if (!task) {
+      this.logger.warn(`Task with ID ${id} not found`);
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+    return task;
   }
 
   async create(title: string) {
+    this.logger.debug(`Creating new task with title: ${title}`);
     const newTask = this.taskRepository.create({ title, done: false });
-    return this.taskRepository.save(newTask);
+    const savedTask = await this.taskRepository.save(newTask);
+    this.logger.log(`Task created with ID ${savedTask.id}`);
+    return savedTask;
   }
 
   async update(id: number, done: boolean) {
     const task = await this.taskRepository.findOne({ where: { id } });
-    if (task) {
-      task.done = done;
-      return this.taskRepository.save(task);
+    if (!task) {
+      this.logger.warn(`Task with ID ${id} not found`);
+      throw new NotFoundException(`Task with ID ${id} not found`);
     }
-    return null;
+    task.done = done;
+    const updatedTask = await this.taskRepository.save(task);
+    this.logger.log(`Task ${id} updated: done=${done}`);
+    return updatedTask;
   }
 
   async remove(id: number) {
-    const task = await this.taskRepository.findOne({ where: { id } });
-    if (task) {
-      await this.taskRepository.remove(task);
-      return task;
+    const result = await this.taskRepository.delete(id);
+    if (result.affected === 0) {
+      this.logger.warn(`Task with ID ${id} not found`);
+      throw new NotFoundException(`Task with ID ${id} not found`);
     }
-    return null;
+    this.logger.log(`Task ${id} deleted`);
   }
 }

@@ -10,4 +10,7 @@ export class Task {
 
   @Column()
   done: boolean;
+
+  @Column({ default: 'medium' })
+  priority: string;
 }

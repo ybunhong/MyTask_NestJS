@@ -21,7 +21,7 @@ import { Task } from './tasks/task.entity.js';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         entities: [Task],
-        synchronize: true,
+        synchronize: false,
       }),
     }),
     TypeOrmModule.forFeature([Task]),
