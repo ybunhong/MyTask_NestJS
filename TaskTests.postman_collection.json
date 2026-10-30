@@ -1,0 +1,333 @@
+{
+	"info": {
+		"_postman_id": "task-tests-collection",
+		"name": "Task API Tests",
+		"description": "Test cases for Task API - validation, error handling, and authentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST - Valid Title",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Complete project documentation\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/tasks",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["tasks"]
+				},
+				"description": "Test (a): POST with a valid title - should succeed"
+			},
+			"response": []
+		},
+		{
+			"name": "POST - Empty Title",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/tasks",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["tasks"]
+				},
+				"description": "Test (b): POST with empty title - should fail validation (IsNotEmpty)"
+			},
+			"response": []
+		},
+		{
+			"name": "POST - No Title Field",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/tasks",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["tasks"]
+				},
+				"description": "Test (c): POST with no title field - should fail validation"
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH - Valid Boolean True",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"done\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/tasks/1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["tasks", "1"]
+				},
+				"description": "Test (d): PATCH with valid boolean true - should succeed"
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH - Text Instead of Boolean",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"done\": \"yes\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/tasks/1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["tasks", "1"]
+				},
+				"description": "Test (e): PATCH with text 'yes' instead of boolean - should fail validation (IsBoolean)"
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH - Empty Body",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/tasks/1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["tasks", "1"]
+				},
+				"description": "Test (f): PATCH with empty body - should fail validation (missing done field)"
+			},
+			"response": []
+		},
+		{
+			"name": "GET - Non-numeric ID (ParseIntPipe Test)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/tasks/abc",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["tasks", "abc"]
+				},
+				"description": "Test GET with non-numeric ID - should return 400 Bad Request (ParseIntPipe validation)"
+			},
+			"response": []
+		},
+		{
+			"name": "GET - Non-existent Task ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/tasks/99999",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["tasks", "99999"]
+				},
+				"description": "Test GET with non-existent task ID - should return 404 NotFoundException"
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH - Non-existent Task ID",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"done\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/tasks/99999",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["tasks", "99999"]
+				},
+				"description": "Test PATCH with non-existent task ID - should return 404 NotFoundException"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE - Non-existent Task ID",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/tasks/99999",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["tasks", "99999"]
+				},
+				"description": "Test DELETE with non-existent task ID - should return 404 NotFoundException"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /auth/register - Valid Registration",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\",\n    \"email\": \"test@example.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/register",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["auth", "register"]
+				},
+				"description": "Register a new user - should return access_token"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /auth/register - Duplicate Username",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\",\n    \"email\": \"another@example.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/register",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["auth", "register"]
+				},
+				"description": "Register with duplicate username - should return 401 Unauthorized"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /auth/login - Valid Credentials",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/login",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["auth", "login"]
+				},
+				"description": "Login with valid credentials - should return access_token"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /auth/login - Invalid Credentials",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"wrongpassword\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/login",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["auth", "login"]
+				},
+				"description": "Login with invalid password - should return 401 Unauthorized"
+			},
+			"response": []
+		}
+	]
+}

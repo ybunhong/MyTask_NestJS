@@ -6,6 +6,8 @@ import { AppService } from './app.service.js';
 import { TasksController } from './tasks/tasks.controller.js';
 import { TasksService } from './tasks/tasks.service.js';
 import { Task } from './tasks/task.entity.js';
+import { User } from './users/user.entity.js';
+import { AuthModule } from './auth/auth.module.js';
 
 @Module({
   imports: [
@@ -20,11 +22,12 @@ import { Task } from './tasks/task.entity.js';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [Task],
+        entities: [Task, User],
         synchronize: false,
       }),
     }),
-    TypeOrmModule.forFeature([Task]),
+    TypeOrmModule.forFeature([Task, User]),
+    AuthModule,
   ],
   controllers: [AppController, TasksController],
   providers: [AppService, TasksService],
