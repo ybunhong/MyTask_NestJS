@@ -34,12 +34,16 @@ export class AuthService {
       email,
     });
 
-    await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
+    const { password: _password, ...userWithoutPassword } = savedUser;
 
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: savedUser.id, username: savedUser.username };
     const accessToken = this.jwtService.sign(payload);
 
-    return { access_token: accessToken };
+    return {
+      ...userWithoutPassword,
+      access_token: accessToken,
+    };
   }
 
   async login(loginDto: LoginDto) {
